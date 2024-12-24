@@ -1,5 +1,13 @@
-<script>
+<script lang="ts">
   import { statusbar } from "$lib/state";
+  import { getVersion } from "@tauri-apps/api/app";
+  import { onMount } from "svelte";
+
+  let version = $state<string | null>(null);
+
+  onMount(async () => {
+    version = await getVersion();
+  });
 </script>
 
 <div class="bg-dark-800 border-dark-700 border-t text-sm flex justify-between">
@@ -21,5 +29,10 @@
       </div>
     {/if}
   </div>
-  <div class="py-1 pr-4">Screencap v0.1.0</div>
+  <div class="py-1 pr-4">
+    Screentaku
+    {#if version}
+      v{version}
+    {/if}
+  </div>
 </div>

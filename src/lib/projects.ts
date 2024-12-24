@@ -8,10 +8,11 @@ import {
 import { activeProject, statusbar } from "./state";
 import { goto } from "$app/navigation";
 import { get } from "svelte/store";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 export async function newProject() {
   const dir = await open({
-    title: "Create a new Screencap project",
+    title: "Create a new Screentaku project",
     multiple: false,
     directory: true,
     recursive: true,
@@ -46,7 +47,7 @@ export async function newProject() {
 
 export async function openProject() {
   const dir = await open({
-    title: "Open a Screencap project",
+    title: "Open a Screentaku project",
     multiple: false,
     directory: true,
     recursive: true,
@@ -58,7 +59,7 @@ export async function openProject() {
   const files = await readDir(dir);
   if (!files.find((file) => file.name === "project.scr")) {
     await message(
-      "Can't open project! This directory isn't a valid Screencap project.",
+      "Can't open project! This directory isn't a valid Screentaku project.",
       {
         kind: "error",
       },
@@ -76,7 +77,7 @@ export async function loadProject(dir: string) {
 
   if (projectData.status === "processing") {
     await message(
-      "Can't open project! This project is in the processing state. This either means it is currently active in another window, or Screencap was closed during processing, in which case you need to delete the project and create a new one.",
+      "Can't open project! This project is in the processing state. This either means it is currently active in another window, or Screentaku was closed during processing, in which case you need to delete the project and create a new one.",
       {
         kind: "error",
       },
@@ -97,6 +98,8 @@ export async function loadProject(dir: string) {
   }
 
   projectData.dir = dir;
+
+  getCurrentWindow().setTitle(`Screentaku - ${dir}`);
 
   // Save the project data to the store
   activeProject.set(projectData);
@@ -131,6 +134,8 @@ export async function closeProject() {
     );
     return;
   }
+
+  getCurrentWindow().setTitle("Screentaku");
 
   activeProject.set(null);
   statusbar.set({

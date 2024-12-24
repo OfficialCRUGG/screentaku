@@ -134,6 +134,7 @@
         itemWidth={150 * (16 / 9)}
         height={gridHeight}
         scrollBehavior="smooth"
+        class="scrollbar"
       >
         {#snippet item({ index, style })}
           <button
